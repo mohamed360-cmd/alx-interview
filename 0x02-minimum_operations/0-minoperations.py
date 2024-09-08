@@ -1,27 +1,35 @@
 #!/usr/bin/python3
-""" Script that computes a minimum operations
-    needed in a CopyAll - Paste task
-"""
+'''The minimum operations coding challenge.
+'''
 
 
 def minOperations(n):
-    """
-    Method for compute the minimum number
-    of operations for task Copy All and Paste
-
-    Args:
-        n: input value
-        factor_list: List to save the operations
-    Return: the sum of the operations
-    """
-    if n < 2:
+    '''Computes the fewest number of operations needed to result
+    in exactly n H characters.
+    '''
+    if not isinstance(n, int):
         return 0
-    factor_list = []
-    i = 1
-    while n != 1:
-        i += 1
-        if n % i == 0:
-            while n % i == 0:
-                n /= i
-                factor_list.append(i)
-    return sum(factor_list)
+    ops_count = 0
+    clipboard = 0
+    done = 1
+    # print('H', end='')
+    while done < n:
+        if clipboard == 0:
+            # init (the first copy all and paste)
+            clipboard = done
+            done += clipboard
+            ops_count += 2
+            # print('-(11)->{}'.format('H' * done), end='')
+        elif n - done > 0 and (n - done) % done == 0:
+            # copy all and paste
+            clipboard = done
+            done += clipboard
+            ops_count += 2
+            # print('-(11)->{}'.format('H' * done), end='')
+        elif clipboard > 0:
+            # paste
+            done += clipboard
+            ops_count += 1
+            # print('-(01)->{}'.format('H' * done), end='')
+    # print('')
+    return ops_count
