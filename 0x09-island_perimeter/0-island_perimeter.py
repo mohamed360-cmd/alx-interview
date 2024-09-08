@@ -1,51 +1,28 @@
 #!/usr/bin/python3
-"""Module for Island Perimeter
+"""Prime game module.
 """
 
 
-def island_perimeter(grid):
-    """Returns the perimeter of the island described in grid.
-
-    grid is a list of list of integers:
-    - 0 represents water
-    - 1 represents land
-    Each cell is square, with a side length of 1
-    Cells are connected horizontally/vertically (not diagonally).
-    grid is rectangular, with its width and height not exceeding 100
-    The grid is completely surrounded by water
-    There is only one island (or nothing).
-    The island doesn’t have “lakes” (water inside that isn’t connected to
-    the water surrounding the island).
-
-    Args:
-        grid (list of list of int): the grid representing the island
-
-    Returns:
-        int: the perimeter of the island
+def isWinner(x, nums):
+    """Determines the winner of a prime game session with `x` rounds.
     """
-    # Determine the number of rows and columns in the grid
-    rows = len(grid)
-    cols = len(grid[0])
-
-    # Initialize the perimeter variable to 0
-    perimeter = 0
-
-    # Loop through each cell in the grid
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == 1:
-                # Check the top edge
-                if i == 0 or grid[i-1][j] == 0:
-                    perimeter += 1
-                # Check the bottom edge
-                if i == rows-1 or grid[i+1][j] == 0:
-                    perimeter += 1
-                # Check the left edge
-                if j == 0 or grid[i][j-1] == 0:
-                    perimeter += 1
-                # Check the right edge
-                if j == cols-1 or grid[i][j+1] == 0:
-                    perimeter += 1
-
-    # Return the total perimeter
-    return perimeter
+    if x < 1 or not nums:
+        return None
+    marias_wins, bens_wins = 0, 0
+    # generate primes with a limit of the maximum number in nums
+    n = max(nums)
+    primes = [True for _ in range(1, n + 1, 1)]
+    primes[0] = False
+    for i, is_prime in enumerate(primes, 1):
+        if i == 1 or not is_prime:
+            continue
+        for j in range(i + i, n + 1, i):
+            primes[j - 1] = False
+    # filter the number of primes less than n in nums for each round
+    for _, n in zip(range(x), nums):
+        primes_count = len(list(filter(lambda x: x, primes[0: n])))
+        bens_wins += primes_count % 2 == 0
+        marias_wins += primes_count % 2 == 1
+    if marias_wins == bens_wins:
+        return None
+    return 'Maria' if marias_wins > bens_wins else 'Ben'
